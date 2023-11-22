@@ -1,0 +1,17 @@
+name: DTHE2CIL
+channels:
+    - conda-forge
+    - intel
+    - astra-toolbox
+    - ccpi
+dependencies:
+    - ipyevents=2.0.1
+    - ipympl=0.9.1
+    - ipywidgets=7.7.0
+    - jupyterlab=3.4
+    - mpl-interactions=0.22.0
+    - numpy
+    - python=3.10
+    - cil=23.1.0
+    - tigre
+    - astra-toolbox
