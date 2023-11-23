@@ -179,14 +179,14 @@ class DTHEDataReader(object):
 
         # Create the acquisition geometry
         self._ag = AcquisitionGeometry.create_Cone3D(
-            source_position=[-source_to_object, 0, 0], 
-            detector_direction_x=[0, -1,  0],
-            detector_direction_y=[0,  0, -1],
-            detector_position=[object_to_detector, 0, 0], 
+            source_position=[0, -source_to_object, 0], 
+            detector_direction_x=[1, 0,  0],
+            detector_direction_y=[0, 0, 1],
+            detector_position=[0, object_to_detector, 0], 
             rotation_axis_position=[0, 0, 0])
 
         # Set the angles of rotation
-        self._ag.set_angles(np.linspace(0, 360, number_of_projections))
+        self._ag.set_angles(-np.linspace(0, 360, number_of_projections))
 
         # Read the first projection to extract its size in nmber of pixels
         first_projection_data = imread(image_file_names[0])
