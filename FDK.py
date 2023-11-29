@@ -2,7 +2,7 @@
 
 # import sys
 import argparse
-import matplotlib
+# import matplotlib
 
 from cil.processors import TransmissionAbsorptionConverter
 from cil.utilities.display import show_geometry
@@ -36,7 +36,7 @@ if args.display_geometry and args.save_geometry is None:
 
 # Display the geometry using a Matplotlib figure and save it into a file
 if args.save_geometry is not None and not args.display_geometry:
-    matplotlib.use('Agg')
+    # matplotlib.use('Agg')
     show_geometry(data.geometry).save(args.save_geometry)
 
 # Print the geometry in the terminal
