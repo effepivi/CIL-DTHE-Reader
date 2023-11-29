@@ -27,10 +27,13 @@ args = parser.parse_args()
 print(args)
 
 # Create the reader
+start = time.time()
 reader = DTHEDataReader(args.src)
 
 # Load the data
 data = reader.read()
+stop = time.time()
+print("Data read execution time:", "{0:0.2f}".format((stop - start) / 60.0), "minutes")
 
 # Display the geometry using a Matplotlib figure
 if args.display_geometry and args.save_geometry is None:
@@ -46,12 +49,16 @@ if args.print_geometry:
     print(data.geometry)
 
 # Apply the minus log 
+start = time.time()
 data = TransmissionAbsorptionConverter()(data)
+stop = time.time()
+print("minus log execution time:", "{0:0.2f}".format((stop - start) / 60.0), "minutes")
 
 backend = args.backend.lower()
 start = time.time()
 if backend == "cil":
-
+    print("Filter: CIL")
+    print("Projector: Tigre")
     # Prepare the data for Tigre
     data.reorder(order='tigre')
 
@@ -61,6 +68,8 @@ if backend == "cil":
     reconstruction_algorithm.set_filter_inplace(True)
     recon = reconstruction_algorithm.run()
 elif backend == "tigre":
+    print("Filter: Tigre")
+    print("Projector: Tigre")
     # Prepare the data for Astra-toolbox
     data.reorder(order='tigre')
 
@@ -69,6 +78,8 @@ elif backend == "tigre":
     reconstruction_algorithm =  FBP_tigre(ig, data.geometry)
     recon = reconstruction_algorithm(data)
 elif backend == "astra":
+    print("Filter: Astra-toolbox")
+    print("Projector: Astra-toolbox")
     # Prepare the data for Astra-toolbox
     data.reorder(order='astra')
 
@@ -79,7 +90,7 @@ elif backend == "astra":
 else:
     raise ValueError(backend + " is invalid. Expected values are \"cil\" \"tigre\" or \"astra\".")
 stop = time.time()
-print("Execution time:", "{0:0.2f}".format(stop - start), "seconds")
+print("Reconstuction execution time:", "{0:0.2f}".format((stop - start) / 60.0), "minutes")
 
 # Save the CT volume as a stack of TIFF files
 if not os.path.isdir(args.dest):
