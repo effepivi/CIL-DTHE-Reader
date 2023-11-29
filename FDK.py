@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-# import sys
+import sys
 import argparse
 # import matplotlib
 
@@ -22,7 +22,7 @@ parser.add_argument("-pg", "--print_geometry", action="store_true", help="Print 
 parser.add_argument("--save_geometry", type=str, help="Path of the file name where the plot of the geometry will be saved")
 parser.add_argument("-b", "--backend", type=str, default="tigre", help="The backend to use, either tigre or astra")
 args = parser.parse_args()
-
+print(args)
 
 # Create the reader
 reader = DTHEDataReader(args.src)
