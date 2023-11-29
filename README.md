@@ -83,7 +83,27 @@ conda env create -f environment.yml
 ```bash
 conda activate DTHE2CIL
 ```
-2. Use the executable script:
+2. See all the possible options of the executable script `FDK.py`:
 ```bash
-./FDK.py PATH_TO/unireconstruction.xml WHERE_TO_SAVE_RECONSTRUCTION
+./FDK.py -h
+```
+3. Now, try it. For one of my dataset, I use when Tigre is required:
+```bash
+./FDK.py \
+    --backend tigre \
+    --save_geometry /dataset1/geometry.pdf \
+    /dataset1/unireconstruction.xml \
+    /dataset1/CIL-recons-tigre
+```
+or when the Astra-toolbox is required:
+```bash
+./FDK.py \
+    --backend astra \
+    --save_geometry /dataset1/geometry.pdf \
+    /dataset1/unireconstruction.xml \
+    /dataset1/CIL-recons-astra
+```
+
+
+
 
