@@ -9,7 +9,8 @@ from cil.processors import TransmissionAbsorptionConverter
 from cil.utilities.display import show_geometry
 from cil.io import TIFFWriter
 from cil.recon import FDK
-from cil.plugins.astra import FBP
+from cil.plugins.astra import FBP as FBP_astra
+from cil.plugins.tigre import FBP as FBP_tigre
 
 from DTHEDataReader import *
 
@@ -21,7 +22,7 @@ parser.add_argument("dest", type=str, help="Destination location")
 parser.add_argument("-dg", "--display_geometry", action="store_true", help="Display the geometry using a Matplotlib figure")
 parser.add_argument("-pg", "--print_geometry", action="store_true", help="Print the geometry in the terminal")
 parser.add_argument("--save_geometry", type=str, help="Path of the file name where the plot of the geometry will be saved")
-parser.add_argument("-b", "--backend", type=str, default="tigre", help="The backend to use, either tigre or astra")
+parser.add_argument("-b", "--backend", type=str, default="CIL", help="The backend to use, either CIL, tigre or astra")
 args = parser.parse_args()
 print(args)
 
@@ -49,7 +50,7 @@ data = TransmissionAbsorptionConverter()(data)
 
 backend = args.backend.lower()
 start = time.time()
-if backend == "tigre":
+if backend == "cil":
 
     # Prepare the data for Tigre
     data.reorder(order='tigre')
@@ -57,20 +58,28 @@ if backend == "tigre":
     # Reconstruct using FDK
     ig = data.geometry.get_ImageGeometry()
     reconstruction_algorithm =  FDK(data, ig)
-    # reconstruction_algorithm.set_filter_inplace(True)
+    reconstruction_algorithm.set_filter_inplace(True)
     recon = reconstruction_algorithm.run()
+elif backend == "tigre":
+    # Prepare the data for Astra-toolbox
+    data.reorder(order='tigre')
+
+    # Reconstruct using FDK
+    ig = data.geometry.get_ImageGeometry()
+    reconstruction_algorithm =  FBP_tigre(ig, data.geometry)
+    recon = reconstruction_algorithm(data)
 elif backend == "astra":
     # Prepare the data for Astra-toolbox
     data.reorder(order='astra')
 
     # Reconstruct using FDK
     ig = data.geometry.get_ImageGeometry()
-    reconstruction_algorithm =  FBP(ig, data.geometry)
+    reconstruction_algorithm =  FBP_astra(ig, data.geometry)
     recon = reconstruction_algorithm(data)
 else:
-    raise ValueError(backend + " is invalid. Expected values are either \"tigre\" or \"astra\".")
+    raise ValueError(backend + " is invalid. Expected values are \"cil\" \"tigre\" or \"astra\".")
 stop = time.time()
-print("Execution time:", stop - start, "seconds")
+print("Execution time:", "{0:0.2f}".format(stop - start), "seconds")
 
 # Save the CT volume as a stack of TIFF files
 if not os.path.isdir(args.dest):

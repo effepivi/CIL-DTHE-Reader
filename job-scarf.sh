@@ -16,8 +16,8 @@
 #SBATCH --partition=gpu
 #SBATCH --gres=gpu:3
 #
-# Runtime of this jobs is less than 5 minutes.
-#SBATCH --time=00:05:00
+# Runtime of this jobs is less than 15 minutes.
+#SBATCH --time=00:15:00
 #SBATCH --mem=5G
 
 module load CUDA/11.5.0
@@ -30,15 +30,27 @@ conda activate DTHE2CIL
 # Edit the path below
 DATA_PATH=$HOME/CIL-DTHE-Reader/data/
 
+# Fastest:
+# Filtering: CIL
+# Projector: Tigre
+./FDK.py \
+    --backend cil \
+    --save_geometry $DATA_PATH/geometry.pdf \
+    $DATA_PATH/unireconstruction.xml \
+    $DATA_PATH/CIL-recons-cil
+
+# Slower
+# Filtering: Tigre
+# Projector: Tigre
 ./FDK.py \
     --backend tigre \
-    --save_geometry $DATA_PATH/geometry.pdf \
     $DATA_PATH/unireconstruction.xml \
     $DATA_PATH/CIL-recons-tigre
 
-# Tested, it works, but slower than Tigre
+# Slowest
+# Filtering: Astra
+# Projector: Astra
 ./FDK.py \
     --backend astra \
     $DATA_PATH/unireconstruction.xml \
     $DATA_PATH/CIL-recons-astra
-
