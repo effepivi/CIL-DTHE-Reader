@@ -3,6 +3,7 @@
 import sys
 import argparse
 # import matplotlib
+import time
 
 from cil.processors import TransmissionAbsorptionConverter
 from cil.utilities.display import show_geometry
@@ -47,13 +48,16 @@ if args.print_geometry:
 data = TransmissionAbsorptionConverter()(data)
 
 backend = args.backend.lower()
+start = time.time()
 if backend == "tigre":
+
     # Prepare the data for Tigre
     data.reorder(order='tigre')
 
     # Reconstruct using FDK
     ig = data.geometry.get_ImageGeometry()
     reconstruction_algorithm =  FDK(data, ig)
+    # reconstruction_algorithm.set_filter_inplace(True)
     recon = reconstruction_algorithm.run()
 elif backend == "astra":
     # Prepare the data for Astra-toolbox
@@ -65,6 +69,8 @@ elif backend == "astra":
     recon = reconstruction_algorithm(data)
 else:
     raise ValueError(backend + " is invalid. Expected values are either \"tigre\" or \"astra\".")
+stop = time.time()
+print("Execution time:", stop - start, "seconds")
 
 # Save the CT volume as a stack of TIFF files
 if not os.path.isdir(args.dest):
