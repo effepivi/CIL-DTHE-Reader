@@ -186,7 +186,7 @@ class DTHEDataReader(object):
             rotation_axis_position=[0, 0, 0])
 
         # Set the angles of rotation
-        self._ag.set_angles(-np.linspace(0, 360, number_of_projections))
+        self._ag.set_angles(np.linspace(360, 0, number_of_projections))
 
         # Read the first projection to extract its size in nmber of pixels
         first_projection_data = imread(image_file_names[0])
@@ -196,8 +196,7 @@ class DTHEDataReader(object):
         self._ag.set_labels(['angle','vertical','horizontal'])
 
         # Panel is width x height
-        self._ag.set_panel(first_projection_data.shape[::-1], pixel_size_in_mm)
-
+        self._ag.set_panel(first_projection_data.shape[::-1], pixel_size_in_mm, origin='top-left')
 
     def read(self):
         
